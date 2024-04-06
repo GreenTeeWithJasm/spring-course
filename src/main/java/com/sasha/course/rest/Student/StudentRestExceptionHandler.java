@@ -1,10 +1,12 @@
 package com.sasha.course.rest.Student;
 
 import com.sasha.course.dao.AddStudentException;
+import com.sasha.course.dao.BadRequestStudentsException;
 import com.sasha.course.dao.StudentException;
 import com.sasha.course.entities.Student.StudentErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -20,16 +22,32 @@ public class StudentRestExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<StudentErrorResponse> handleException(AddStudentException exc) {
-        StudentErrorResponse error = new StudentErrorResponse(HttpStatus.BAD_REQUEST, exc.getMessage());
+        StudentErrorResponse error = new StudentErrorResponse(HttpStatus.CONFLICT, exc.getMessage());
 
-        return new ResponseEntity<StudentErrorResponse> (error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<StudentErrorResponse> (error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
     public ResponseEntity<StudentErrorResponse> handleException(NoResourceFoundException exc) {
         StudentErrorResponse error = new StudentErrorResponse(HttpStatus.NOT_FOUND, exc.getMessage());
 
+        return new ResponseEntity<StudentErrorResponse> (error, HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<StudentErrorResponse> handleBadRequestException(Exception exc) {
+        StudentErrorResponse error = new StudentErrorResponse(HttpStatus.BAD_REQUEST, exc.getMessage());
+
         return new ResponseEntity<StudentErrorResponse> (error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(HttpRequestMethodNotSupportedException exc) {
+        return handleBadRequestException(exc);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(BadRequestStudentsException exc) {
+        return handleBadRequestException(exc);
     }
 
     @ExceptionHandler
