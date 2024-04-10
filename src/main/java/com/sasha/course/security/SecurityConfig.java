@@ -28,6 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(configurer -> {
+            configurer.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
             configurer.requestMatchers(HttpMethod.GET, "/students").hasAnyRole("STUDENT", "TEACHER", "ADMIN");
             configurer.requestMatchers(HttpMethod.GET, "/students/**").hasAnyRole("TEACHER", "ADMIN");
             configurer.requestMatchers(HttpMethod.POST, "/students").hasAnyRole("TEACHER", "ADMIN");
