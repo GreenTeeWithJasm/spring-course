@@ -1,4 +1,4 @@
-package com.sasha.course.rest.Student;
+package com.sasha.course.rest;
 
 import com.sasha.course.entities.Student.StudentResponse;
 import com.sasha.course.entities.Student.StudentResponseMessage;
